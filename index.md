@@ -1,6 +1,6 @@
 # Quantification of follow-up
 
-* [Quantification of follow-up](https://numbersman77.github.io/quantFU/quantFU.html)
+* [Quantification of follow-up](https://oncoestimand.github.io/quantFU/quantFU.html)
 
 Authors: 
 

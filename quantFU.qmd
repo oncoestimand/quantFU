@@ -1,19 +1,56 @@
-## ----r, include=FALSE, echo=FALSE---------------------------------------------
+---
+title: "Quantification of follow-up: code accompanying paper"
+author: "Kaspar Rufibach, on behalf of follow-up quantification taks force of the oncology estimand WG"
+date: "Last change: `r format(Sys.time(), '%dth %B %Y')`"
+output: 
+  rmarkdown::html_document:
+    highlight: pygments
+    number_sections: yes
+    self_contained: yes
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+bibliography: stat.bib
+---
+
+# Background
+
+Code for the paper @rufibach_22 ([download from arxiv](https://arxiv.org/abs/2206.05216)) written by the "follow-up quantification" task force of the [oncology estimand WG](www.oncoestimand.org).
+
+# Purpose of this document
+
+This R markdown file provides easy accessible code to compute all the quantifiers for follow-up. The github repository where this document is hosted is available [here](https://github.com/numbersman77/quantFU).
+
+To illustrate the functions all clinical trial data in this file is simulated. In the paper, the PH examples uses real data.
+
+# Setup {.tabset .tabset-fade .tabset-pills}
+
+## Packages
+
+```{r, include=FALSE, echo=FALSE}
 # --------------------------------------------------------------
 # generate R file with code from this file
 # --------------------------------------------------------------
 knitr::purl(input = "quantFU.qmd", output = "quantFU.r")
+```
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+```{r, include=TRUE, echo=TRUE}
 # --------------------------------------------------------------
 # packages
 # --------------------------------------------------------------
 packs <- c("survival", "rpact", "survRM2")    
 for (i in 1:length(packs)){library(packs[i], character.only = TRUE)}
+```
 
+## Functions
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+Below all functions are defined. 
+
+* `quantifyFU`: This function provides all the seven methods described in the paper draft.
+* `plot.qfu`: Plot the distributions from which medians are computed.
+
+```{r, include=TRUE, echo=TRUE}
 # --------------------------------------------------------------
 # functions
 # --------------------------------------------------------------
@@ -269,9 +306,15 @@ stabilityKM <- function(time, event){
   res <- list("t_low" = t_low, "c_low" = c_low, "t_up" = t_up, "c_up" = c_up)
   return(res)
 }
+```
 
+# Example: Proportional hazards
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+## Simulate a clinical trial with time-to-event endpoint using `rpact`
+
+A clinical trial with very similar properties as the Gallium data in @rufibach_22 is simulated using `rpact` @rpact.
+
+```{r, include=TRUE, echo=TRUE}
 # simulate a clinical trial using rpact
 # time unit is months
 design <- getDesignGroupSequential(informationRates = 1,
@@ -318,15 +361,21 @@ ccod <- day0 + simdat$lastObservationTime[1] * 365.25 / 12
 # check
 so1 <- summary(coxph(Surv(pfs, pfsevent) ~ arm))
 so1
+```
 
+Plot the Kaplan-Meier estimates:
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+```{r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5}
 par(las = 1)
 plot(survfit(Surv(pfs, pfsevent) ~ arm), col = 2:3, mark = "'", lty = 1, xlim = c(0, 100), 
      xlab = "PFS", ylab = "probability of being event-free")
+```
 
+## Precision
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+Compute survival probabilities, their differences and confidence intervals at milestones.
+
+```{r, include=TRUE, echo=TRUE}
 ms <- c(36, 48)
 msR1 <- confIntKM_t0(time = pfs[arm == "R"], event = pfsevent[arm == "R"], t0 = ms, 
                      conf.level = 0.95)
@@ -342,20 +391,30 @@ ms2d1 <- confIntMilestoneDiff(time = pfs, event = pfsevent, group = arm,
                               t0 = ms[2], M = 10 ^ 3, conf.level = 0.95)$km
 ms1d1
 ms2d1
+```
 
+## Quantification of follow-up using various methods
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+Now let us apply the above functions:
+
+```{r, include=TRUE, echo=TRUE}
 fu <- quantifyFU(rando = rando, event_time = pfs, event_type = event_type, ccod = ccod)
 
 # medians of all these distributions:
 fu$medians
+```
 
+Plot distributions:
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+```{r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5}
 plot(fu)
+```
 
+# Example: delayed separation
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+## Simulate a clinical trial with time-to-event endpoint using `rpact`
+
+```{r, include=TRUE, echo=TRUE}
 # Simulation assuming a delayed treatment effect
 alpha <- 0.05
 beta <- 0.2
@@ -425,9 +484,11 @@ arm_nph <- factor(simdat_run1$treatmentGroup, levels = 1:2, labels = c("G", "R")
 
 # define clinical cutoff date based on simulation result
 ccod1_nph <- day0_nph + simdat_run1$lastObservationTime[1] * 365.25 / 12
+```
 
+Plot Kaplan-Meier estimates:
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+```{r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5}
 par(las = 1, mar = c(4.5, 4.5, 2, 1), oma = c(0, 0, 3, 0))
 
 so1_nph <- survfit(Surv(pfs1_nph, pfsevent1_nph) ~ arm_nph)
@@ -438,9 +499,13 @@ abline(v = ms, col = grey(0.5), lwd = 2, lty = 2)
 
 # title
 mtext("Delayed separation", 3, line = 0, outer = TRUE)
+```
 
+## Precision
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+Compute survival probabilities, their differences and confidence intervals at milestones.
+
+```{r, include=TRUE, echo=TRUE}
 ms <- c(36, 48)
 msR1_nph <- confIntKM_t0(time = pfs1_nph[arm == "R"], event = pfsevent1_nph[arm == "R"], 
                          t0 = ms, conf.level = 0.95)
@@ -456,9 +521,11 @@ ms2d1_nph <- confIntMilestoneDiff(time = pfs1_nph, event = pfsevent1_nph, group 
                               t0 = ms[2], M = 10 ^ 3, conf.level = 0.95)$km
 ms1d1_nph
 ms2d1_nph
+```
 
+## Stability
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+```{r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5}
 par(las = 1, mar = c(4.5, 4.5, 2, 1), oma = c(0, 0, 3, 0))
 
 so2_nph <- survfit(Surv(pfs1_nph, pfsevent1_nph) ~ 1, subset = (arm_nph == "G"))
@@ -481,9 +548,11 @@ lines(so2_nph_low, col = grey(0.5), lty = 1, conf.int = FALSE)
 # upper
 so2_nph_up <- survfit(Surv(stab_del_t$t_up, stab_del_t$c_up) ~ 1)
 lines(so2_nph_up, col = grey(0.5), lty = 1, conf.int = FALSE)
+```
 
+## Power for RMST
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+```{r, include=TRUE, echo=TRUE}
 # restriction timepoint for RMST
 tau <- NULL   # use minimum of the two last observed times in each arm
 
@@ -518,9 +587,13 @@ rmst_power
 
 mean(logrank_pval <= 0.05)
 simulationResultNPH$overallReject
+```
 
+## Quantification of follow-up using various methods
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+Now let us apply the above functions:
+
+```{r, include=TRUE, echo=TRUE}
 # compute various follow-up quantities
 fu1_nph <- quantifyFU(rando = rando_nph, event_time = pfs1_nph, 
                       event_type = event_type_nph, ccod = ccod1_nph)
@@ -528,8 +601,13 @@ fu1med_nph <- fu1_nph$medians
 
 # medians of all these distributions:
 fu1med_nph
+```
 
+Plot distributions:
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+```{r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5}
 plot(fu1_nph)
+```
 
+
+# References

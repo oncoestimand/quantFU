@@ -1,7 +1,7 @@
 ---
 title: "Quantification of follow-up: code accompanying paper"
 author: "Kaspar Rufibach, on behalf of follow-up quantification taks force of the oncology estimand WG"
-date: "Last change: `r format(Sys.time(), '%dth %B %Y')`"
+date: "Last change: `r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_document:
     highlight: pygments
@@ -15,7 +15,7 @@ bibliography: stat.bib
 
 # Background
 
-Code for the paper @rufibach_22 ([download from arxiv](https://arxiv.org/abs/2206.05216)) written by the "follow-up quantification" task force of the [oncology estimand WG](www.oncoestimand.org).
+Code for the paper @rufibach_22 ([download from arxiv](https://arxiv.org/abs/2206.05216)) written by the "follow-up quantification" task force of the [oncology estimand WG](http://www.oncoestimand.org).
 
 # Purpose of this document
 

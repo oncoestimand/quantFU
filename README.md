@@ -1,6 +1,6 @@
 # Quantification of follow-up
 
-* [github repository](https://oncoestimand.github.io/quantFU)
+* [github repository](https://github.com/oncoestimand/quantFU)
 * [markdown file](https://oncoestimand.github.io/quantFU/quantFU.html)
 
 Authors: 

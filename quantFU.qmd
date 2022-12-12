@@ -19,7 +19,7 @@ Code for the paper @rufibach_22 ([download from arxiv](https://arxiv.org/abs/220
 
 # Purpose of this document
 
-This R markdown file provides easy accessible code to compute all the quantifiers for follow-up. The github repository where this document is hosted is available [here](https://github.com/numbersman77/quantFU).
+This R markdown file provides easy accessible code to compute all the quantifiers for follow-up. The github repository where this document is hosted is available [here](https://github.com/oncoestimand/quantFU).
 
 To illustrate the functions all clinical trial data in this file is simulated. In the paper, the PH examples uses real data.
 

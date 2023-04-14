@@ -15,7 +15,7 @@ bibliography: stat.bib
 
 # Background
 
-Code for the paper @rufibach_22 ([download from arxiv](https://arxiv.org/abs/2206.05216)) written by the [follow-up quantification task force](https://oncoestimand.github.io/oncowg_webpage/docs/taskforces.html#quantification-of-follow-up) of the [oncology estimand WG](http://www.oncoestimand.org).
+Code for the paper @rufibach_23fu ([download from journal](https://doi.org/10.1002/pst.2300), [download from arxiv](https://arxiv.org/abs/2206.05216)) written by the [follow-up quantification task force](https://oncoestimand.github.io/oncowg_webpage/docs/taskforces.html#quantification-of-follow-up) of the [oncology estimand WG](http://www.oncoestimand.org).
 
 # Purpose of this document
 

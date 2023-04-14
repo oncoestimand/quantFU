@@ -1,11 +1,11 @@
-## ----r, include=FALSE, echo=FALSE---------------------------------------------
+
 # --------------------------------------------------------------
 # generate R file with code from this file
 # --------------------------------------------------------------
 knitr::purl(input = "quantFU.qmd", output = "quantFU.r")
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # --------------------------------------------------------------
 # packages
 # --------------------------------------------------------------
@@ -13,7 +13,7 @@ packs <- c("survival", "rpact", "survRM2")
 for (i in 1:length(packs)){library(packs[i], character.only = TRUE)}
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # --------------------------------------------------------------
 # functions
 # --------------------------------------------------------------
@@ -271,7 +271,7 @@ stabilityKM <- function(time, event){
 }
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # simulate a clinical trial using rpact
 # time unit is months
 design <- getDesignGroupSequential(informationRates = 1,
@@ -320,13 +320,13 @@ so1 <- summary(coxph(Surv(pfs, pfsevent) ~ arm))
 so1
 
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+
 par(las = 1)
 plot(survfit(Surv(pfs, pfsevent) ~ arm), col = 2:3, mark = "'", lty = 1, xlim = c(0, 100), 
      xlab = "PFS", ylab = "probability of being event-free")
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 ms <- c(36, 48)
 msR1 <- confIntKM_t0(time = pfs[arm == "R"], event = pfsevent[arm == "R"], t0 = ms, 
                      conf.level = 0.95)
@@ -344,18 +344,18 @@ ms1d1
 ms2d1
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 fu <- quantifyFU(rando = rando, event_time = pfs, event_type = event_type, ccod = ccod)
 
 # medians of all these distributions:
 fu$medians
 
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+
 plot(fu)
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # Simulation assuming a delayed treatment effect
 alpha <- 0.05
 beta <- 0.2
@@ -427,7 +427,7 @@ arm_nph <- factor(simdat_run1$treatmentGroup, levels = 1:2, labels = c("G", "R")
 ccod1_nph <- day0_nph + simdat_run1$lastObservationTime[1] * 365.25 / 12
 
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+
 par(las = 1, mar = c(4.5, 4.5, 2, 1), oma = c(0, 0, 3, 0))
 
 so1_nph <- survfit(Surv(pfs1_nph, pfsevent1_nph) ~ arm_nph)
@@ -440,7 +440,7 @@ abline(v = ms, col = grey(0.5), lwd = 2, lty = 2)
 mtext("Delayed separation", 3, line = 0, outer = TRUE)
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 ms <- c(36, 48)
 msR1_nph <- confIntKM_t0(time = pfs1_nph[arm == "R"], event = pfsevent1_nph[arm == "R"], 
                          t0 = ms, conf.level = 0.95)
@@ -458,7 +458,7 @@ ms1d1_nph
 ms2d1_nph
 
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+
 par(las = 1, mar = c(4.5, 4.5, 2, 1), oma = c(0, 0, 3, 0))
 
 so2_nph <- survfit(Surv(pfs1_nph, pfsevent1_nph) ~ 1, subset = (arm_nph == "G"))
@@ -483,7 +483,7 @@ so2_nph_up <- survfit(Surv(stab_del_t$t_up, stab_del_t$c_up) ~ 1)
 lines(so2_nph_up, col = grey(0.5), lty = 1, conf.int = FALSE)
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # restriction timepoint for RMST
 tau <- NULL   # use minimum of the two last observed times in each arm
 
@@ -520,7 +520,7 @@ mean(logrank_pval <= 0.05)
 simulationResultNPH$overallReject
 
 
-## ----r, include=TRUE, echo=TRUE-----------------------------------------------
+
 # compute various follow-up quantities
 fu1_nph <- quantifyFU(rando = rando_nph, event_time = pfs1_nph, 
                       event_type = event_type_nph, ccod = ccod1_nph)
@@ -530,6 +530,6 @@ fu1med_nph <- fu1_nph$medians
 fu1med_nph
 
 
-## ----r, echo = TRUE, results = 'asis', message = FALSE, fig.cap = "", fig.align = "center", fig.width = 7, fig.height = 5.5----
+
 plot(fu1_nph)
 
